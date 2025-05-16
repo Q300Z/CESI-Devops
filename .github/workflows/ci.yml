@@ -52,9 +52,6 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm i
-
       - name: Build Next.js app
         run: npm run build
 
@@ -65,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nextjs-app
-          path: .next
+          path: .next/
