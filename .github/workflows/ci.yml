@@ -1,0 +1,41 @@
+name: E2E on Chrome
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+
+        - name: Cypress run
+          uses: cypress-io/github-action@v3
+        with:
+          project: ./site
+          browser: chrome
+          build: yarn build
+          start: yarn start
+          wait-on: "http://localhost:3000"
+    build:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+
+          - name: Install dependencies
+            run: npm install
+
+          - name: Build Next.js app
+            run: npm run build
+
+          - name: Upload artifact
+            uses: actions/upload-artifact@v2
+            with:
+              name: nextjs-app
+              path: ''
