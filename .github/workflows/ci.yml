@@ -11,23 +11,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: "npm"
+          cache: 'npm'
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: "~/.cache/Cypress"
+          key: cypress-cache-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            cypress-cache-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
           build: npm run build
-          start: npm start
+          start: npm run start
           wait-on: "http://localhost:3000"
           wait-on-timeout: 60
 
@@ -36,21 +44,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build Next.js app
         run: npm run build
 
-      - name: Upload artifact
+      - name: Upload .next artifact
         uses: actions/upload-artifact@v4
         with:
           name: nextjs-app
