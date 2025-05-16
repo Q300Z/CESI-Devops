@@ -28,7 +28,7 @@ jobs:
             cypress-cache-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci
+        run: npm i
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
@@ -53,7 +53,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --omit=dev
+        run: npm i
 
       - name: Build Next.js app
         run: npm run build
