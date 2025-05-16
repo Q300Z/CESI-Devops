@@ -7,35 +7,41 @@ on:
     branches: [ "main" ]
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout
-          uses: actions/checkout@v2
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-        - name: Cypress run
-          uses: cypress-io/github-action@v3
+      - name: Install dependencies
+        working-directory: ./site
+        run: npm install
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
         with:
-          project: ./site
+          working-directory: ./site
           browser: chrome
-          build: yarn build
-          start: yarn start
+          build: npm build
+          start: npm start
           wait-on: "http://localhost:3000"
-    build:
-        needs: test
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v2
+          wait-on-timeout: 60 # seconds
 
-          - name: Install dependencies
-            run: npm install
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-          - name: Build Next.js app
-            run: npm run build
+      - name: Install dependencies
+        run: npm install
 
-          - name: Upload artifact
-            uses: actions/upload-artifact@v2
-            with:
-              name: nextjs-app
-              path: ''
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: nextjs-app
+          path: .next
